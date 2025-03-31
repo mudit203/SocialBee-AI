@@ -11,14 +11,14 @@ export const register = async (req, res) => {
         if (!username || !email || !password) {
             return res.status(401).json({
                 message: "Something is missing!!",
-                succcess: false
+                success: false
             })
 
         }
         const user = await User.findOne({ email });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
+         
         if (user) {
             return res.status(401).json({
                 message: "please try with a differenct email",
@@ -33,7 +33,7 @@ export const register = async (req, res) => {
 
         return res.status(201).json({
             message: "Account created successfully",
-            succcess: true
+            success: true
         });
 
     } catch (error) {
@@ -55,11 +55,11 @@ export const login = async (req, res) => {
 
         if (!user) {
             return res.status(401).json({
-                message: "incorrect email or password",
+                message: "User not registered please signup",
                 success: false
             });
         }
-        const ispasswordMAtch = bcrypt.compare(password, user.password);
+        const ispasswordMAtch = await bcrypt.compare(password, user.password);
         if (!ispasswordMAtch) {
             return res.status(401).json({
                 message: "incorrect email or password",

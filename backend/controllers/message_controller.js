@@ -51,7 +51,7 @@ export const getmessage= async(req,res)=>{
                 success:true,
                 messages:[]
             })
-        }
+        };
         return res.status(200).json({
             success:true,
             messages:conversation?.messages
