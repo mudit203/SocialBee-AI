@@ -65,26 +65,18 @@ const Sidebarhandler=(item)=>{
     }
 }
     return (
-        <div className='w-screen h-screen py-10'>
-            <h1 className='mb-3'>logo</h1>
-            <div className='w-[16%] px-4  h-full'>
+        <div className=' h-screen w-[20%] py-10  fixed'>
+            <h1 className='mb-3 mx-8 pl-5 font-bold text-xl'>logo</h1>
+            <div className='max-w-full px-4  h-full'>
                 <ul className=' flex flex-col gap-8'>
                     {Sidebarobjects.map((item, index) => (
-                        <li key={index} className="flex items-center space-x-2 p-2 hover:bg-gray-200 cursor-pointer">
-                            {/* {
-                                item.text == "Logout" ? (<>
-                                    <span onClick={Logouthandler}>{item.icon}</span>
-                                    <span>{item.text}</span>
-                                </>) : (<>
-                                    <span>{item.icon}</span>
-                                    <span>{item.text}</span>
-                                </>)
-                            } */}
-                            <div className='flex gap-3 w-full' onClick={()=>Sidebarhandler(item)}>
-                            <span>{item.icon}</span>
-                            <span>{item.text}</span>
-                            </div>
-                        </li>
+                       <li key={index} className="flex items-center space-x-2 p-2 cursor-pointer block w-full hover:bg-gray-200">
+                       <div className="flex items-center gap-3 w-full sm:w-auto" onClick={() => Sidebarhandler(item)}>
+                           <span>{item.icon}</span>
+                           <span>{item.text}</span>
+                       </div>
+                   </li>
+                   
                     ))}
                 </ul>
 
