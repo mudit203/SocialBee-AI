@@ -191,6 +191,7 @@ try {
 
     return res.status(200).json({
         message:"Comment added",
+        comment,
         success:true
     });
     

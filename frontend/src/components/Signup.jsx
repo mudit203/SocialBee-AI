@@ -85,15 +85,17 @@ const Signup = () => {
          value={input.email}
          onChange={changeEventHandler}
          placeholder="Enter your Email"/>
+
        </div>
        <div>
         <span className='font-bold'>Password</span>
         <Input 
-         type="text"
+         type="password"
          name="password"
          value={input.password}
          onChange={changeEventHandler}
          placeholder="Enter your Password"/>
+
         <div className='my-4'>
         <Button type='submit' className="w-full">Signup</Button>
 
