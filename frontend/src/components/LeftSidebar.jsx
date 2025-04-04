@@ -5,6 +5,33 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import axios from 'axios'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
+const LeftSidebar = () => {
+    const {user}=useSelector(store=>store.auth)
+    console.log("Redux User:", user);
+    const navigate=useNavigate();
+    const Logouthandler = async () => {
+        try {
+            const res = await axios.get('http://localhost:8000/api/v1/user/logout',{}, {
+              
+                withCredentials: true
+            })
+            if (res.data.success) {
+                
+                navigate('/login');
+                toast.success(res.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+const Sidebarhandler=(item)=>{
+    if(item.text=="Logout"){
+        Logouthandler();
+    }
+}
+
 const Sidebarobjects = [
     {
         icon: <Home />,
@@ -32,7 +59,7 @@ const Sidebarobjects = [
     },
     {
         icon: (<Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src={user?.profilePicture}  />
             <AvatarFallback>CN</AvatarFallback>
         </Avatar>),
         text: "Profile"
@@ -43,27 +70,7 @@ const Sidebarobjects = [
     },
 
 ]
-const LeftSidebar = () => {
-    const navigate=useNavigate();
-    const Logouthandler = async () => {
-        try {
-            const res = await axios.get('http://localhost:8000/api/v1/user/logout',{}, {
-               
-                withCredentials: true
-            })
-            if (res.data.success) {
-                navigate('/login');
-                toast.success(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-const Sidebarhandler=(item)=>{
-    if(item.text=="Logout"){
-        Logouthandler();
-    }
-}
+
     return (
         <div className=' h-screen w-[20%] py-10  fixed'>
             <h1 className='mb-3 mx-8 pl-5 font-bold text-xl'>logo</h1>

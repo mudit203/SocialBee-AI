@@ -82,10 +82,10 @@ export const login = async (req, res) => {
             _id: user._id,
             username: user.username,
             email: user.email,
-            profilepicture: user.profilepicture,
+            profilePicture: user.profilePicture,
             bio: user.bio,
             followers: user.followers,
-            fololowing: user.following,
+            following: user.following,
             posts: populatedposts
         }
 
