@@ -5,7 +5,6 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Mainlayout from './components/Mainlayout'
 import Home from './components/Home'
 import Profile from './components/Profile'
-
 const browserRoute=createBrowserRouter([
   {
     path:'/',

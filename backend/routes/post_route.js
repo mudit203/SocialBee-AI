@@ -4,7 +4,7 @@ import upload from "../middlewares/multer.js";
 import { AddComment, AddNewPost, BookmarkPost, deletepost, getallcomments, GetAllPosts, LikePosts, UnLikePosts } from "../controllers/post_controller.js";
 const router = express.Router();
 
-router.route('/addpost').post(IsAuthenticated,upload.single('file'),AddNewPost);
+router.route('/addpost').post(IsAuthenticated,upload.single('image'),AddNewPost);
 router.route('/all').get(IsAuthenticated,GetAllPosts);
 router.route('/:id/like').get(IsAuthenticated,LikePosts);
 router.route('/:id/unlike').get(IsAuthenticated,UnLikePosts);

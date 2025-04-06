@@ -1,16 +1,19 @@
 
 import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import axios from 'axios'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setAuthUser } from '@/redux/authSlice'
+import CreatePost from './CreatePost'
 
 const LeftSidebar = () => {
     const {user}=useSelector(store=>store.auth)
-    console.log("Redux User:", user);
+    const [Createpost, setCreatepost] = useState(false);
     const navigate=useNavigate();
+     const dispatch = useDispatch();
     const Logouthandler = async () => {
         try {
             const res = await axios.get('http://localhost:8000/api/v1/user/logout',{}, {
@@ -18,7 +21,7 @@ const LeftSidebar = () => {
                 withCredentials: true
             })
             if (res.data.success) {
-                
+                dispatch(setAuthUser(null));
                 navigate('/login');
                 toast.success(res.data.message)
             }
@@ -29,6 +32,10 @@ const LeftSidebar = () => {
 const Sidebarhandler=(item)=>{
     if(item.text=="Logout"){
         Logouthandler();
+    }
+    if(item.text=="Post"){
+        
+      setCreatepost(true);
     }
 }
 
@@ -88,6 +95,7 @@ const Sidebarobjects = [
                 </ul>
 
             </div>
+            <CreatePost open={Createpost} func={setCreatepost}/>
         </div>
     )
 }

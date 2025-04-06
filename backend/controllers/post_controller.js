@@ -9,16 +9,16 @@ import { Comment } from "../models/comment_model.js";
 export const AddNewPost=async (req,res)=>{
     try {                              
         const{caption}=req.body;
-        const image=req.file;
+    const image=req.file;
         const AuthorId=req.id;
-        const Author=User.findById(AuthorId);
-    
+        const Author= await User.findById(AuthorId);
+        if(!image) return res.status(400).json({message:"image required", success:false});
         const OptimisedImageBuffer= await sharp(image.buffer).resize({width:800,height:800,fit:'inside'}).toFormat('jpeg',{quality:80}).toBuffer();
         const fileUri= `data:image/jpeg;base64,${OptimisedImageBuffer.toString('base64')}`;
         
         const cloudResponse= await cloudinary.uploader.upload(fileUri);
         
-        if(!image) return res.status(400).json({message:"image required"});
+        
         const post= await Post.create({
             caption,
             image:cloudResponse.secure_url,
@@ -50,21 +50,19 @@ export const AddNewPost=async (req,res)=>{
 
 };
 
-export const GetAllPosts= async(req,res)=>{
+export const GetAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find().sort({createdAt:-1});
-
-        await posts.populate({path:'author',select:'username,profilePicture'})
+      const posts = await Post.find()
+        .sort({ createdAt: -1 })
+        .populate({ path: 'author', select: 'username profilePicture' })
         .populate({
-            
-            path:'comments',
-            sort:{createdAt:-1},
-            populate:{
-                path:'author',
-                select:'username,profilePicture'
-            }
-        
-    });
+          path: 'comments',
+          options: { sort: { createdAt: -1 } },
+          populate: {
+            path: 'author',
+            select: 'username profilePicture',
+          },
+        });
        return res.status(200).json({
        
         posts,

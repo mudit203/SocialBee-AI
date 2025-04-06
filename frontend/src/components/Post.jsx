@@ -8,7 +8,7 @@ import { FiMessageCircle } from "react-icons/fi";
 import { BsSend } from "react-icons/bs";
 import CommentDialog from './CommentDialog'
 import { useSearchParams } from 'react-router-dom'
-function Post() {
+function Post({post}) {
     const [Text, setText] = useState("");
     const ChangeEventHandler=(e)=>{
         const InputText=e.target.value;
@@ -29,10 +29,10 @@ function Post() {
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
                     <Avatar>
-                        <AvatarImage src="" alt="post_image" />
+                        <AvatarImage src={post.author.profilePicture} alt="post_image" />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <h1>username</h1>
+                    <h1>{post.author.username}</h1>
                 </div>
                 <Dialog>
                     <DialogTrigger asChild>
@@ -45,7 +45,7 @@ function Post() {
                     </DialogContent>
                 </Dialog>
             </div>
-            <img className='my-2 rounded-sm aspect-square object-cover' src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D" alt="Post" />
+            <img className='my-2 rounded-sm aspect-square object-cover' src={post.image} alt="Post" />
            
            <div className='flex justify-between'>
             <div className='flex gap-3'>
@@ -60,9 +60,9 @@ function Post() {
            <span className='font-medium font-bold my-2 block'>1k likes</span>
            <p>
             <span className='font-bold mr-3'>
-                Username
+            {post.author.username}
             </span>
-            Caption
+            {post.caption}
            </p>
            <span onClick={()=> setOpen(true)}>View all comments</span>
            
