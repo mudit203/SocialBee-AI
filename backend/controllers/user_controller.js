@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import { Post } from "../models/post_model.js";
+import { populate } from "dotenv";
 
 export const register = async (req, res) => {
     try {
@@ -68,15 +69,15 @@ export const login = async (req, res) => {
         }
         const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
   
-        const populatedposts= await Promise.all(
-            user.posts.map(async(postId)=>{
-                const post= await Post.findById(postId);
-                if(post.author.equals(user._id)){
-                    return post
+        const populatedposts = await Promise.all(
+            user.posts.map(async (postId) => {
+                const post = await Post.findById(postId).populate('author', 'username profilePicture');
+                if (post && post.author && post.author._id.equals(user._id)) {
+                    return post;
                 }
                 return null;
             })
-        )
+        );
 
         user = {
             _id: user._id,
@@ -118,8 +119,14 @@ export const logout = async (_, res) => {
 export const getprofile = async (req, res) => {
     try {
         const userid = req.params.id;
-        let user = await User.findById(userid).select('-password');
-
+        let user = await User.findById(userid).populate({path:'posts',populate:{
+            path:'author',
+            select:'username profilePicture'
+        },
+      options:{sort:{createdAt:-1}}
+    
+    }).select('-password');
+       
         return res.status(200).json({
             user,
             success: true
@@ -177,7 +184,7 @@ export const getsuggestedUsers = async (req, res) => {
         }
 
         return res.status(200).json({
-            succcess: true,
+            success: true,
             users: suggestedusers
         });
 

@@ -54,7 +54,7 @@ export const GetAllPosts = async (req, res) => {
     try {
       const posts = await Post.find()
         .sort({ createdAt: -1 })
-        .populate({ path: 'author', select: 'username profilePicture' })
+        .populate({ path: 'author', select: 'username profilePicture bio' })
         .populate({
           path: 'comments',
           options: { sort: { createdAt: -1 } },
@@ -79,7 +79,7 @@ export const GetUserPosts= async(req,res)=>{
     try {
         const Authorid=req.id;
         const posts = await Post.find({author:Authorid}).sort({createdAt:-1})
-        .populate({path:'author',select:'username,profilePicture'}).
+        .populate({path:'author',select:'username profilePicture'}).
          populate({
             path:'comments',
             sort:{createdAt:-1},
@@ -105,7 +105,7 @@ export const LikePosts= async(req,res) =>{
         const currentuserid=req.id;
         const postid=req.params.id;
        
-        const post=await Post.find(postid);
+        const post=await Post.findById(postid);
         if(!post){
             return res.status(400).json({
                 message:"Post not found",
@@ -115,7 +115,7 @@ export const LikePosts= async(req,res) =>{
        //post.likes.push(currentuserid);               CANT BE USED AS ONE USER CAN LIKE ONLY ONE TIME
        //post.populate({path:'likes',select:'username, profilePicture'});   
 
-       await post.UpdateOne({$addToSet:{likes:currentuserid}});
+       await post.updateOne({$addToSet:{likes:currentuserid}});
        await post.save();
        
       //IMPLEMENT SOCKET IO
@@ -138,7 +138,7 @@ export const UnLikePosts= async(req,res) =>{
       const currentuserid=req.id;
       const postid=req.params.id;
      
-      const post=await Post.find(postid);
+      const post=await Post.findById(postid);
       if(!post){
           return res.status(400).json({
               message:"Post not found",
@@ -148,7 +148,7 @@ export const UnLikePosts= async(req,res) =>{
      //post.likes.push(currentuserid);               CANT BE USED AS ONE USER CAN LIKE ONLY ONE TIME
      //post.populate({path:'likes',select:'username, profilePicture'});   
 
-     await post.UpdateOne({$pull:{likes:currentuserid}});
+     await post.updateOne({$pull:{likes:currentuserid}});
      await post.save();
      
     //IMPLEMENT SOCKET IO
@@ -171,7 +171,7 @@ try {
     const currentuser=req.id;
     const postid=req.params.id;
     const {text}= req.body;
-    const post= await post.findById(postid);
+    const post= await Post.findById(postid);
     if(!text){
         return res.status(401).json({
             message:"comment cant be empty",
@@ -182,8 +182,11 @@ try {
         text,
         author:currentuser,
         post:postid
-    }).populate({path:'author',select:'username,profilePicture'});
-    
+    })
+
+
+    await comment.populate({path:'author',select:'username profilePicture'});
+
     post.comments.push(comment._id);
     await post.save();
 
@@ -254,12 +257,12 @@ export const deletepost=async(req,res)=>{
         }
       await Post.findByIdAndDelete(postid);
      
-      let user=User.findById(authorid);
+      let user= await User.findById(authorid);
       user.posts=user.posts.filter(id=> id.toString() !== postid);
 
       await Comment.deleteMany({post:postid});
 
-      return res.statuse(200).json({
+      return res.status(200).json({
         message:"post deleted",
         success:true
       })

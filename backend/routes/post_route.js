@@ -10,7 +10,7 @@ router.route('/:id/like').get(IsAuthenticated,LikePosts);
 router.route('/:id/unlike').get(IsAuthenticated,UnLikePosts);
 router.route('/:id/comment').post(IsAuthenticated,AddComment);
 router.route('/:id/comment/all').get(IsAuthenticated,getallcomments);
-router.route('/delete/:id').get(IsAuthenticated,deletepost);
+router.route('/delete/:id').delete(IsAuthenticated,deletepost);
 router.route('/:id/bookmark').get(IsAuthenticated,BookmarkPost);
 
 export default router;

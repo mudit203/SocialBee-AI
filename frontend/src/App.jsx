@@ -5,6 +5,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Mainlayout from './components/Mainlayout'
 import Home from './components/Home'
 import Profile from './components/Profile'
+import EditProfile from './components/EditProfile'
 const browserRoute=createBrowserRouter([
   {
     path:'/',
@@ -16,8 +17,12 @@ const browserRoute=createBrowserRouter([
        
       },
       {
-        path:'/profile',
+        path:'/profile/:id',
         element:<Profile/>
+      },
+      {
+        path:'/account/edit',
+        element:<EditProfile/>
       }
     ]
 
@@ -30,6 +35,7 @@ const browserRoute=createBrowserRouter([
     path:'/signup',
     element:<Signup/>
   }
+ 
   ])
 
 function App() {
