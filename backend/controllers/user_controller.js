@@ -152,7 +152,7 @@ export const editprofile = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 message: "User not found",
-                succcess: false
+                success: false
             });
         };
         if (bio) user.bio = bio;
@@ -163,7 +163,7 @@ export const editprofile = async (req, res) => {
 
         return res.status(200).json({
             message: "Profile updated",
-            succcess: true,
+            success: true,
             user
         });
     } catch (error) {
@@ -202,7 +202,7 @@ export const followOrUnfollow = async (req, res) => {
         if (currentuser === userToBeFollowed) {
             return res.status(400).json({
                 message: "cannot unfollow same user",
-                succcess: false
+                success: false
             })
         };
         const user = await User.findById(currentuser);
@@ -210,7 +210,7 @@ export const followOrUnfollow = async (req, res) => {
         if (!user || !targetUser) {
             return res.status(400).json({
                 message: "User not found",
-                succcess: false
+                success: false
             });
         };
         const isFollowing = user.following.includes(userToBeFollowed)
@@ -223,7 +223,7 @@ export const followOrUnfollow = async (req, res) => {
             ])
             return res.status(200).json({
                 message: "Unfollowed successfullly",
-                succcess: true
+                success: true
             });
         }
         

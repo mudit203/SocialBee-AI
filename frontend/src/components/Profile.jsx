@@ -33,7 +33,7 @@ function Profile() {
         <div className='grid grid-cols-2'>
           <section className='flex items-center justify-center'>
             <Avatar className='h-32 w-32'>
-              <AvatarImage src={userprofile?.pofilePicture} alt="profilephoto" />
+              <AvatarImage src={userprofile?.profilePicture} alt="profilephoto" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </section>
@@ -57,7 +57,7 @@ function Profile() {
                 <p className='font-semibold'>{userprofile?.following?.length} <span>following</span></p>
               </div>
               <div className='flex flex-col gap-3'>
-                <span>{userprofile?.bio || "bio here"}</span>
+                <span className='font-bold'>{userprofile?.bio || "bio here"}</span>
                 <Badge className="w-fit" variant="secondary">{userprofile?.username}</Badge>
                 <div>Hi this is mudit</div>
                 <div>Hi this is mudit</div>
