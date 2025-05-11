@@ -160,7 +160,7 @@ export const editprofile = async (req, res) => {
         if (profilePicture) user.profilePicture = cloudResponse.secure_url;
 
         await user.save();
-
+       
         return res.status(200).json({
             message: "Profile updated",
             success: true,

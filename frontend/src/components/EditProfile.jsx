@@ -34,7 +34,7 @@ function EditProfile() {
   const editprofilehandler= async ()=>{
     const formdata=new FormData();
     formdata.append("bio",data.bio)
-    formdata.append("gender",data.gender);
+    formdata.append("gender",data?.gender);
     if(data.profilePhoto){
     formdata.append("profilePicture",data.profilePhoto);
     }
@@ -52,7 +52,7 @@ function EditProfile() {
         const updateduserdata={
           ...user,
           profilePicture:res.data.user?.profilePicture,
-          gender:res.data.user?.gender,
+          gender:res.data?.user?.gender,
           bio:res.data.user?.bio,
         }
      dispatch(setAuthUser(updateduserdata));

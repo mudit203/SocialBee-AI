@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const usegetuserprofile=async (UserId)=>{
+const usegetuserprofile= (UserId)=>{
    const dispatch = useDispatch();
     useEffect(() => {
       
