@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -9,12 +9,16 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '@/redux/postSlice';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 function CreatePost({open,func}) {
   const [caption, setcaption] = useState("")
+  const [airesponse, setairesponse] = useState("")
+  const [ailoader, setailoader] = useState(false)
   const Imageref=useRef();
   const [loader, setloader] = useState(false)
   const [imagepreview, setimagepreview] = useState("");
+  const apiKey = import.meta.env.VITE_GEMINI_API;
   const [file, setfile] = useState("")
   const{posts}=useSelector(store=>store.post);
   const dispatch = useDispatch();
@@ -24,11 +28,12 @@ function CreatePost({open,func}) {
         setfile(file);
         const url = await readFileAsDataURL(file);
         setimagepreview(url);
+         setcaption("");      
+        setairesponse("");
        }
        
   }
 
-  
   
      
  const Changehandler=(e)=>{
@@ -65,6 +70,49 @@ function CreatePost({open,func}) {
    }
   
  }
+ 
+ const generativeaihandler = async () => {
+  if (!file) {
+    toast.error("Please select an image first!");
+    return;
+  }
+  setailoader(true);
+  try {
+    // Read image as base64
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64Image = reader.result.split(',')[1];
+
+      // Initialize Gemini
+      const genAI = new GoogleGenerativeAI(apiKey); // Replace with your API key
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      // Prepare the prompt and image
+      const prompt = "Generate a short, catchy caption for this image.Do not write heading like here is the caption,just give the required caption thats it give it a sort of a description of the image,generate new and different caption when the same image is given again";
+      const imagePart = {
+        inlineData: {
+          data: base64Image,
+          mimeType: file.type,
+        },
+      };
+
+     
+      const result = await model.generateContent([prompt, imagePart]);
+      const response = await result.response;
+      const generatedCaption = response.text();
+     
+      setairesponse(generatedCaption);
+      toast.success("Caption generated!");
+      setailoader(false);
+    };
+    reader.readAsDataURL(file);
+  } catch (error) {
+    toast.error("Failed to generate caption.");
+    setailoader(false);
+  }
+};
+
+
   return (
     <div>
  
@@ -83,18 +131,20 @@ function CreatePost({open,func}) {
       </div>
     
     </div>
-    <Textarea value={caption} placeholder="write a caption..." onChange={Changehandler}/>
+    <Textarea value={caption} placeholder={airesponse} onChange={Changehandler}/>
     <input ref={Imageref}  type="file" className='hidden'  onChange={changeimagehandler} />
 
     {
     imagepreview &&  (<div>
-   <img src={imagepreview} alt="kaint" />
+   <img className='h-80 w-100' src={imagepreview} alt="kaint" />
     </div>)
     }
     <Button onClick={()=>Imageref.current.click()}>Select from device</Button>
 
     
       { loader? (<div className='w-full flex items-center justify-center'><Loader2 className='animate-spin'/></div>):(<Button onClick={CreatePostHandler}>Post</Button>)}
+      {ailoader?(<div className='w-full flex items-center justify-center'><Loader2 className='animate-spin'/></div>):(<Button onClick={generativeaihandler}>Generate AI Caption</Button>)}
+      {ailoader?(<div></div>):(<Button onClick={()=>setcaption(airesponse)}>Accept Ai response</Button>)}
   </DialogContent>
 </Dialog>
     </div>

@@ -79,6 +79,16 @@ export const login = async (req, res) => {
             })
         );
 
+        const userId = user._id;
+        user = await User.findById(userId)
+            .populate({
+                path: 'bookmarks',
+                populate: { path: 'author', select: 'username profilePicture' }
+            })
+            .populate('posts')
+            .populate('followers')
+            .populate('following');
+
         user = {
             _id: user._id,
             username: user.username,
@@ -87,7 +97,8 @@ export const login = async (req, res) => {
             bio: user.bio,
             followers: user.followers,
             following: user.following,
-            posts: populatedposts
+            posts: populatedposts,
+            
         }
 
 

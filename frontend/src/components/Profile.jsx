@@ -29,7 +29,7 @@ function Profile() {
   };
 
   const displayedposts =
-    activetab === "posts" ? userprofile?.posts || [] : userprofile?.bookmarks || [];
+    activetab === "posts" ? userprofile?.posts : userprofile?.bookmarks;
 
   // Conditional rendering to wait for userprofile
   if (!userprofile) {

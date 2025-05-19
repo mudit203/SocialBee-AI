@@ -3,6 +3,7 @@ import { Post } from "../models/post_model.js";
 import { User } from "../models/user_model.js";
 import cloudinary from "../utils/cloudinary.js";
 import { Comment } from "../models/comment_model.js";
+import { getreceiverid, io } from "../socket/socket.js";
 
 
 
@@ -15,6 +16,7 @@ export const AddNewPost=async (req,res)=>{
         if(!image) return res.status(400).json({message:"image required", success:false});
         const OptimisedImageBuffer= await sharp(image.buffer).resize({width:800,height:800,fit:'inside'}).toFormat('jpeg',{quality:80}).toBuffer();
         const fileUri= `data:image/jpeg;base64,${OptimisedImageBuffer.toString('base64')}`;
+        // console.log(fileUri);
         
         const cloudResponse= await cloudinary.uploader.upload(fileUri);
         
@@ -119,7 +121,19 @@ export const LikePosts= async(req,res) =>{
        await post.save();
        
       //IMPLEMENT SOCKET IO
-
+      const user=await User.findById(currentuserid).select('username profilePicture');
+     const postownerid=post.author.toString();
+     if(postownerid!==currentuserid){
+        const notification={
+            type:'like',
+            userId:currentuserid,
+            userdetails:user,
+            postid,
+            message:"your post was liked",
+        }
+        const postownersocketid=getreceiverid(postownerid);
+        io.to(postownersocketid).emit('notification',notification)
+     }
       return res.status(200).json({
         message:"post liked",
         success:true
@@ -152,7 +166,19 @@ export const UnLikePosts= async(req,res) =>{
      await post.save();
      
     //IMPLEMENT SOCKET IO
-
+   const user=await User.findById(currentuserid).select('username profilePicture');
+     const postownerid=post.author.toString();
+     if(postownerid!==currentuserid){
+        const notification={
+            type:'dislike',
+            userId:currentuserid,
+            userdetails:user,
+            postid,
+            message:"your post was disliked",
+        }
+        const postownersocketid=getreceiverid(postownerid);
+        io.to(postownersocketid).emit('notification',notification)
+     }
     return res.status(200).json({
       message:"post unliked",
       success:true
@@ -288,7 +314,7 @@ export const BookmarkPost= async(req,res)=>{
     
     const user = await User.findById(userid);
     if(user.bookmarks.includes(postid)){
-        await user.UpdateOne({$pull:{bookmarks:postid}});
+        await user.updateOne({$pull:{bookmarks:postid}});
         await user.save();
         return res.status(200).json({
             message:"Post removed from Bookmarked",
@@ -296,7 +322,7 @@ export const BookmarkPost= async(req,res)=>{
         })
     }
     else{
-        await user.UpdateOne({$addToSet:{bookmarks:postid}});
+        await user.updateOne({$addToSet:{bookmarks:postid}});
         await user.save();
         return res.status(200).json({
             message:"Post Bookmarked",

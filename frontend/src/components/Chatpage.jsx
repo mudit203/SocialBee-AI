@@ -1,15 +1,43 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { setselecteduser } from '@/redux/authSlice';
 import { Button } from './ui/button';
 import { MessageCircle } from 'lucide-react';
 import Messages from './Messages';
+import axios from 'axios';
+import { setmessages } from '@/redux/chatSlice';
 
 function Chatpage() {
     const { user, suggestedusers, selecteduser } = useSelector(store => store.auth);
+    const{Onlineusers,messages}=useSelector(store=>store.chat)
     const dispatch = useDispatch();
-    const isOnline = false;
+    const [text, settext] = useState("")
+    const sendmessagehandler=async()=>{
+        try {
+            const res=await axios.post(`http://localhost:8000/api/v1/message/send/${selecteduser?._id}`,{message:text},{
+            headers:{
+                "Content-Type":"application/json"
+            },
+            withCredentials:true
+        });
+        if(res.data.success){
+            dispatch(setmessages([...messages,res.data.newmessage]));
+            settext("");
+        }
+        } catch (error) {
+            console.log(error)
+        }
+       
+        
+    }
+     useEffect(() => {
+          
+        
+          return () => {
+            dispatch(setselecteduser(null));
+          }
+        }, [])
     return (
         <div className='flex h-screen'>
             <section className='w-full md:w-1/4'>
@@ -17,6 +45,7 @@ function Chatpage() {
                 <hr className='mb-4 border-gray-300' />
                 <div className='overflow-y-auto h-[80%]'>
                     {suggestedusers.map((item, index) => {
+                         const isOnline = Onlineusers?.includes(item._id)
                         return (<div onClick={() => dispatch(setselecteduser(item))} className='flex gap-3 items-center p-4 hover:bg-gray-50'>
                             <Avatar>
                                 <AvatarImage src={item?.profilePicture} />
@@ -45,8 +74,8 @@ function Chatpage() {
                         </div>
                        <Messages SelectedUser={selecteduser}/>
                         <div className='flex items-center p-4 border-t border-t-gray-300'>
-                            <input type="text" className=" flex-1 mr-2 focus-visible:ring-transparent" placeholder='messages' />
-                            <Button>Send</Button>
+                            <input value={text} onChange={(e)=>settext(e.target.value)} type="text" className=" flex-1 mr-2 focus-visible:ring-transparent" placeholder='messages' />
+                            <Button onClick={sendmessagehandler}>Send</Button>
                         </div>
                     </section>
                 ) : (<div className='flex flex-col items-center justify-center mx-auto'>

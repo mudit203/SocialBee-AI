@@ -8,7 +8,11 @@ import Profile from './components/Profile'
 import EditProfile from './components/EditProfile'
 import Chatpage from './components/Chatpage'
 import { io } from 'socket.io-client'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { setsocket } from './redux/Socketslice'
+import { setonlineusers } from './redux/chatSlice'
+import { setLikeNotification } from './redux/rtnSlice'
 
 
 const browserRoute=createBrowserRouter([
@@ -48,7 +52,9 @@ const browserRoute=createBrowserRouter([
   ])
 
 function App() {
+  const dispatch = useDispatch();
   const {user}=useSelector(store=>store.auth);
+  const {socket}=useSelector(store=>store.socketio)
   useEffect(() => {
     if(user){
       const socketio= io('http://localhost:8000',{
@@ -57,10 +63,29 @@ function App() {
         },
         transports:['websocket']
       })
+
+      dispatch(setsocket(socketio));
+     
+      socketio.on("getonlineusers",(onlineusers)=>{
+        dispatch(setonlineusers(onlineusers));
+      })
+      
+      socketio.on('notification',(notification)=>{
+        dispatch(setLikeNotification(notification));
+      })
+
+      return ()=>{
+        socketio.close();
+        dispatch(setsocket(null));
+      }
+      
+    }else if(socket){
+        socket?.close();
+        dispatch(setsocket(null));
     }
   
    
-  }, [])
+  }, [dispatch,user])
   
 
   return (

@@ -8,12 +8,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '@/redux/authSlice';
 import CreatePost from './CreatePost';
 import { setPosts, setselectedpost } from '@/redux/postSlice';
-
-const LeftSidebar = () => {
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Button } from './ui/button';
+import image from '../assets/logo.png'
+const LeftSidebar = ({open}) => {
   const { user } = useSelector((store) => store.auth);
   const [Createpost, setCreatepost] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const{likeNotification}=useSelector(store=>store.realTimeNotification);
 
   const Logouthandler = async () => {
     try {
@@ -26,6 +29,7 @@ const LeftSidebar = () => {
         dispatch(setPosts([]));
         navigate('/login');
         toast.success(res.data.message);
+        open(false);
       }
     } catch (error) {
       console.log(error);
@@ -35,15 +39,23 @@ const LeftSidebar = () => {
   const Sidebarhandler = (item) => {
     if (item.text === 'Logout') {
       Logouthandler();
+       open(false);
     }
     else if (item.text === 'Post') {
       setCreatepost(true);
+      open(false);
     }
     else if(item.text==='Profile'){
      navigate(`/profile/${user._id}`);
+      open(false);
     }
     else if(item.text==='Home'){
       navigate('/');
+     open(false);
+    }
+    else if(item.text==='Message'){
+      navigate('/chat');
+      open(false);
     }
   };
 
@@ -88,8 +100,8 @@ const LeftSidebar = () => {
   ];
 
   return (
-    <div className='hidden lg:block h-screen w-[20%] py-10 fixed bg-gray-100 shadow-md'>
-      <h1 className='mb-6 mx-8 pl-5 font-bold text-xl'>Logo</h1>
+    <div className='block h-screen py-10 fixed bg-gray-100 shadow-md'>
+    <div className='p-6'><img className="w-40 h-30 rounded-full object-contain" src={image} alt="" /></div>  
       <div className='max-w-full px-4 h-full'>
         <ul className='flex flex-col gap-8'>
           {Sidebarobjects.map((item, index) => (
@@ -101,6 +113,41 @@ const LeftSidebar = () => {
               <div className='flex items-center gap-3 w-full sm:w-auto'>
                 <span>{item.icon}</span>
                 <span>{item.text}</span>
+                {
+                  item.text==='Likes' && likeNotification.length>0 && (
+                    <Popover side='top'>
+                      <PopoverTrigger asChild>
+                         <span className="relative">
+                          <Button size='icon' className='rounded-full h-5 w-5 absolute bottom-6 left-6'>
+                            {likeNotification.length}
+
+                          </Button>
+                        </span>
+
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <div>
+                          {
+                            likeNotification.length==0 ? (<p>No new notification</p>):(
+                              likeNotification.map((notification)=>{
+                                return ( 
+                                  <div>
+                                    <Avatar>
+                                      <AvatarImage src={notification.userdetails?.profilePicture}/>
+
+                                      
+                                    </Avatar>
+                                    <p className='text-sm'> <span className='font-bold'> {notification.userdetails?.username} Liked your post</span></p>
+                                  </div>
+                                )
+                              })
+                            )
+                          }
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  )
+                }
               </div>
             </li>
           ))}

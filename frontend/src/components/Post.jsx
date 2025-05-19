@@ -72,7 +72,18 @@ function Post({ post }) {
             toast.error(error.response.data.message)
         }
     }
-
+ const bookmarkhandler=async()=>{
+    try {
+        const res=await axios.get(`http://localhost:8000/api/v1/post/${post._id}/bookmark`,{
+            withCredentials:true,
+        })
+        if(res.data.success){
+          toast.success(res.data.message);  
+        }
+    } catch (error) {
+        toast.error(error.res.data.message)
+    }
+ }
     const commenthandler = async () => {
         const res = await axios.post(`http://localhost:8000/api/v1/post/${post._id}/comment`, { text }, {
             headers: {
@@ -138,7 +149,7 @@ function Post({ post }) {
                     <BsSend size={'22px'} className='cursor-pointer' />
                 </div>
                 <div>
-                    <FaRegBookmark size={'22px'} className='cursor-pointer' />
+                    <FaRegBookmark size={'22px'} className='cursor-pointer' onClick={bookmarkhandler} />
                 </div>
             </div>
             <span className='font-bold my-2 block'>{postliked} likes</span>
