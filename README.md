@@ -78,24 +78,31 @@ kyoonononononon
     npm install
     ```
 # Set up environment variables
-
-
-
-
+```
+PORT=8000
+MONGO_URI=your_mongo_connection_string
+SECRET_KEY=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
 # Start the servers
 **Backend-**
 ```
 cd .\backend\
 npm run dev
-
 ```
 
-***Frontend-**
+**Frontend-**
 ```
 cd .\frontend\
 npm run dev
 ```
 
+**Open the app uin your browser**
+```
+http://localhost:5173
+```
 
 
 
