@@ -100,10 +100,12 @@ const LeftSidebar = ({open}) => {
   ];
 
   return (
-    <div className='block h-screen py-10 fixed bg-gray-100 shadow-md'>
-    <div className='p-6'><img className="w-40 h-30 rounded-full object-contain" src={image} alt="" /></div>  
-      <div className='max-w-full px-4 h-full'>
-        <ul className='flex flex-col gap-8'>
+    <div className="block fixed h-screen w-full max-w-xs bg-gray-100 shadow-md flex flex-col">
+      <div className="p-6 flex-shrink-0">
+        <img className="w-20 h-20 rounded-full object-contain" src={image} alt="" />
+      </div>
+      <div className="flex-1 overflow-auto px-4">
+        <ul className="flex flex-col gap-5">
           {Sidebarobjects.map((item, index) => (
             <li
               key={index}

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '@/redux/postSlice';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+
 function CreatePost({open,func}) {
   const [caption, setcaption] = useState("")
   const [airesponse, setairesponse] = useState("")
@@ -71,6 +72,14 @@ function CreatePost({open,func}) {
   
  }
  
+const getDataUri = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+};
  const generativeaihandler = async () => {
   if (!file) {
     toast.error("Please select an image first!");
@@ -78,20 +87,22 @@ function CreatePost({open,func}) {
   }
   setailoader(true);
   try {
-    // Read image as base64
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64Image = reader.result.split(',')[1];
+    // // Read image as base64
 
+    // const reader = new FileReader();
+    
+    //   const base64Image = reader.result.split(',')[1];
+   const base64Image=await getDataUri(file)
+   const kk = base64Image.split(',')[1];
       // Initialize Gemini
       const genAI = new GoogleGenerativeAI(apiKey); // Replace with your API key
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       // Prepare the prompt and image
-      const prompt = "Generate a short, catchy caption for this image.Do not write heading like here is the caption,just give the required caption thats it give it a sort of a description of the image,generate new and different caption when the same image is given again";
+      const prompt = "Generate a short, catchy caption for this image.Do not write heading like here is the caption,just give the required caption thats it give it a sort of a description of the image,generate new and different caption when the same image is given again.No headings,just one caption single lined is needed";
       const imagePart = {
         inlineData: {
-          data: base64Image,
+          data: kk,
           mimeType: file.type,
         },
       };
@@ -104,8 +115,8 @@ function CreatePost({open,func}) {
       setairesponse(generatedCaption);
       toast.success("Caption generated!");
       setailoader(false);
-    };
-    reader.readAsDataURL(file);
+  
+    // reader.readAsDataURL(file);
   } catch (error) {
     toast.error("Failed to generate caption.");
     setailoader(false);
@@ -117,7 +128,7 @@ function CreatePost({open,func}) {
     <div>
  
   <Dialog open={open}  >
-  <DialogContent onInteractOutside={() => func(false)}>
+  <DialogContent onInteractOutside={() => func(false)} className="max-h-[90vh] overflow-auto">
     <DialogHeader className="text-center font-semibold">Create a post</DialogHeader>
     <div className='flex gap-3 items-center'>
       <Avatar>
