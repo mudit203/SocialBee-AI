@@ -1,4 +1,4 @@
-# MERN Social App
+# SocialBee AI
 
 A full-stack social media application built using the MERN stack (MongoDB, Express, React, Node.js). The app includes features like user authentication, posts, likes, comments, real-time messaging, and AI-generated captions.
 
@@ -23,13 +23,6 @@ A full-stack social media application built using the MERN stack (MongoDB, Expre
 
 ---
 
-## Project Structure
-```
-kyoonononononon
-
-```
-
----
 ## Backend API Routes
 - `POST /register`: Register a new user.
 - `POST /login`: Login a user.
@@ -99,7 +92,7 @@ cd .\frontend\
 npm run dev
 ```
 
-**Open the app uin your browser**
+**Open the app in your browser**
 ```
 http://localhost:5173
 ```
