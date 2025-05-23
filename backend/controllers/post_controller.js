@@ -133,6 +133,7 @@ export const LikePosts= async(req,res) =>{
         }
         const postownersocketid=getreceiverid(postownerid);
         io.to(postownersocketid).emit('notification',notification)
+     
      }
       return res.status(200).json({
         message:"post liked",
@@ -339,7 +340,3 @@ export const BookmarkPost= async(req,res)=>{
    
 
 }
-
-
-
-
