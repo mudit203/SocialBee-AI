@@ -15,7 +15,7 @@ function Chatpage() {
     const [text, settext] = useState("")
     const sendmessagehandler=async()=>{
         try {
-            const res=await axios.post(`http://localhost:8000/api/v1/message/send/${selecteduser?._id}`,{message:text},{
+            const res=await axios.post(`https://socialbee-ai.onrender.com/api/v1/message/send/${selecteduser?._id}`,{message:text},{
             headers:{
                 "Content-Type":"application/json"
             },

@@ -42,7 +42,7 @@ function EditProfile() {
     try {
       setLoading(true);
       
-      const res= await axios.post('http://localhost:8000/api/v1/user/profile/edit',formdata,{
+      const res= await axios.post('https://socialbee-ai.onrender.com/api/v1/user/profile/edit',formdata,{
         headers:{
           'Content-type':'multipart/form-data'
         },

@@ -11,7 +11,7 @@ const useGetAllmessages=()=>{
     
         const fetchmessages=async ()=>{
             try {
-                const res=await axios.get(`http://localhost:8000/api/v1/message/all/${id}`, {withCredentials:true});
+                const res=await axios.get(`https://socialbee-ai.onrender.com/api/v1/message/all/${id}`, {withCredentials:true});
                 if(res.data.success){
                dispatch(setmessages(res.data.messages));
                 }

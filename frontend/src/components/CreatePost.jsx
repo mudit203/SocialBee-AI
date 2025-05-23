@@ -55,7 +55,7 @@ function CreatePost({open,func}) {
    if(imagepreview) formData.append("image",file);
    setloader(true)
    try {
-    const res= await axios.post("http://localhost:8000/api/v1/post/addpost",formData,{
+    const res= await axios.post("https://socialbee-ai.onrender.com/api/v1/post/addpost",formData,{
       headers: { "Content-Type": "multipart/form-data" },
       withCredentials:true
   });

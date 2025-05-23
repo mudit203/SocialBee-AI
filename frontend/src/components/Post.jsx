@@ -49,7 +49,7 @@ function Post({ post }) {
     const likeposthandler = async () => {
         try {
             const action = liked ? 'unlike' : 'like'
-            const response = await axios.get(`http://localhost:8000/api/v1/post/${post._id}/${action}`, {
+            const response = await axios.get(`https://socialbee-ai.onrender.com/api/v1/post/${post._id}/${action}`, {
                 withCredentials: true
             });
             console.log(response.data);

@@ -79,16 +79,10 @@ CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
-# Start the servers
-**Backend-**
-```
-cd .\backend\
-npm run dev
-```
+# Start the server
 
-**Frontend-**
 ```
-cd .\frontend\
+npm run build
 npm run dev
 ```
 

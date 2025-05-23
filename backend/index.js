@@ -31,7 +31,7 @@ app.get('/',(req,res)=>{
 })
 
 const corsOptions={
-    origin:['http://localhost:5173','http://localhost:8000'],
+    origin:process.env.URL,
     credentials:true
 }
 app.use(cors(corsOptions));

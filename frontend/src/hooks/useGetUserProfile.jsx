@@ -8,7 +8,7 @@ const usegetuserprofile= (UserId)=>{
     useEffect(() => {
       
         const fetchuserprofile=async()=>{
-            const res=await axios.get(`http://localhost:8000/api/v1/user/${UserId}/profile`,{withCredentials:true})
+            const res=await axios.get(`https://socialbee-ai.onrender.com/api/v1/user/${UserId}/profile`,{withCredentials:true})
             if(res.data.success){
              dispatch(setuserprofile(res.data.user));
             }

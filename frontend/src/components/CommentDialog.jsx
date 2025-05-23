@@ -30,7 +30,7 @@ function CommentDialog({ Open, setOpen }) {
 
   }
   const Sendcommenthandler = async () => {
-    const res = await axios.post(`http://localhost:8000/api/v1/post/${selectedpost._id}/comment`, { text }, {
+    const res = await axios.post(`https://socialbee-ai.onrender.com/api/v1/post/${selectedpost._id}/comment`, { text }, {
       headers: {
           "Content-Type": 'application/json'
       },
