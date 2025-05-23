@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Feed from './feed';
+import Feed from './Feed';
 import RightSidebar from './RightSidebar';
 import useGetAllPosts from '@/hooks/useGetAllPosts';
 import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers';
